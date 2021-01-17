@@ -1,0 +1,6 @@
+{
+  "allowed-origins": "127.0.0.1",
+  "webserver-address": "127.0.0.1",
+  "application-mode": "REVERSE_PROXY",
+  "application-port": "8080"
+}
