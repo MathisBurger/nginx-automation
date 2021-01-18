@@ -8,21 +8,21 @@ import (
 	"strings"
 )
 
-type configureWordpressResponse struct {
+type configureAngularResponse struct {
 	Message    string `json:"message"`
 	HttpStatus int    `json:"http_status"`
 	Status     string `json:"status"`
 	Error      string `json:"error"`
 }
 
-func ConfigureWordpressController(c *fiber.Ctx) error {
+func ConfigureAngularController(c *fiber.Ctx) error {
 	domain := c.Query("domain")
 	cfgPath := "/etc/nginx/rproxy/http/enabled" + domain + ".conf"
 	if _, err := os.Stat(cfgPath); os.IsNotExist(err) {
 		_, err := os.Create(cfgPath)
 		if err != nil {
-			return c.JSON(configureWordpressResponse{
-				"Error while installing wordpress",
+			return c.JSON(configureAngularResponse{
+				"Error while installing angular app",
 				200,
 				"ok",
 				err.Error(),
@@ -30,20 +30,20 @@ func ConfigureWordpressController(c *fiber.Ctx) error {
 		}
 	}
 	cfg, _ := config.ParseConfig()
-	data, _ := ioutil.ReadFile("./sample/wordpress.conf")
+	data, _ := ioutil.ReadFile("./sample/angular.conf")
 	modified := []byte(strings.ReplaceAll(strings.ReplaceAll(string(data), "{{DOMAIN}}", domain), "{{UPSTREAM}}", cfg.WebserverAddress))
 	err := ioutil.WriteFile(cfgPath, modified, 0644)
 	if err != nil {
-		return c.JSON(configureWordpressResponse{
-			"Error while installing wordpress",
+		return c.JSON(configureAngularResponse{
+			"Error while installing angular app",
 			200,
 			"ok",
 			err.Error(),
 		})
 	}
 
-	return c.JSON(configureWordpressResponse{
-		"Successfully configured Wordpress",
+	return c.JSON(configureAngularResponse{
+		"Successfully configured angular app",
 		200,
 		"ok",
 		"None",

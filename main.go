@@ -29,4 +29,5 @@ func main() {
 
 func InitReverseProxy(app *fiber.App) {
 	app.Get("/configureWordpress", controller.ConfigureWordpressController)
+	app.Get("/configureAngularApp", controller.ConfigureAngularController)
 }
