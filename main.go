@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/MathisBurger/nginx-automation/config"
+	"github.com/MathisBurger/nginx-automation/controller"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/logger"
@@ -19,11 +20,13 @@ func main() {
 	}))
 
 	app.Use(logger.New())
-	InitReverseProxy(app)
+	if cfg.ApplicationMode == "REVERSE_PROXY" {
+		InitReverseProxy(app)
+	}
 	app.Listen(":" + cfg.ApplicationPort)
 
 }
 
 func InitReverseProxy(app *fiber.App) {
-
+	app.Get("/configureWordpress", controller.ConfigureWordpressController)
 }
