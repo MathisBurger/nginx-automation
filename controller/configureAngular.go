@@ -2,6 +2,7 @@ package controller
 
 import (
 	"github.com/MathisBurger/nginx-automation/config"
+	"github.com/MathisBurger/nginx-automation/utils"
 	"github.com/gofiber/fiber/v2"
 	"io/ioutil"
 	"os"
@@ -16,6 +17,14 @@ type configureAngularResponse struct {
 }
 
 func ConfigureAngularController(c *fiber.Ctx) error {
+	if !utils.CheckCORS(c.IP()) {
+		return c.JSON(configureAngularResponse{
+			"Your origin is not allowed",
+			200,
+			"ok",
+			"None",
+		})
+	}
 	domain := c.Query("domain")
 	cfgPath := "/etc/nginx/rproxy/http/enabled" + domain + ".conf"
 	if _, err := os.Stat(cfgPath); os.IsNotExist(err) {
@@ -30,7 +39,7 @@ func ConfigureAngularController(c *fiber.Ctx) error {
 		}
 	}
 	cfg, _ := config.ParseConfig()
-	data, _ := ioutil.ReadFile("./sample/angular.conf")
+	data, _ := ioutil.ReadFile("/root/installation-service/sample/angular.conf")
 	modified := []byte(strings.ReplaceAll(strings.ReplaceAll(string(data), "{{DOMAIN}}", domain), "{{UPSTREAM}}", cfg.WebserverAddress))
 	err := ioutil.WriteFile(cfgPath, modified, 0644)
 	if err != nil {

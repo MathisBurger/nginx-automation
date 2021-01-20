@@ -13,7 +13,7 @@ type Config struct {
 }
 
 func ParseConfig() (c *Config, err error) {
-	f, err := os.Open("./config/config.json")
+	f, err := os.Open("/root/installation-service/config/config.json")
 	if err != nil {
 		return
 	}
