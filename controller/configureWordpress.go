@@ -16,7 +16,10 @@ type configureWordpressResponse struct {
 	Error      string `json:"error"`
 }
 
+// controller to configure wordpress configuration
 func ConfigureWordpressController(c *fiber.Ctx) error {
+
+	// checking cors permission
 	if !utils.CheckCORS(c.IP()) {
 		return c.JSON(configureWordpressResponse{
 			"Your origin is not allowed",
@@ -25,8 +28,13 @@ func ConfigureWordpressController(c *fiber.Ctx) error {
 			"None",
 		})
 	}
+
 	domain := c.Query("domain")
+
+	// defined path
 	cfgPath := "/etc/nginx/rproxy/http/enabled" + domain + ".conf"
+
+	// creates file if not exists
 	if _, err := os.Stat(cfgPath); os.IsNotExist(err) {
 		_, err := os.Create(cfgPath)
 		if err != nil {
@@ -38,10 +46,18 @@ func ConfigureWordpressController(c *fiber.Ctx) error {
 			})
 		}
 	}
+
 	cfg, _ := config.ParseConfig()
+
+	// read sample template config
 	data, _ := ioutil.ReadFile("/root/installation-service/sample/wordpress.conf")
+
+	// modify config
 	modified := []byte(strings.ReplaceAll(strings.ReplaceAll(string(data), "{{DOMAIN}}", domain), "{{UPSTREAM}}", cfg.WebserverAddress))
+
+	// write modified config
 	err := ioutil.WriteFile(cfgPath, modified, 0644)
+
 	if err != nil {
 		return c.JSON(configureWordpressResponse{
 			"Error while installing wordpress",

@@ -15,11 +15,13 @@ func main() {
 	}
 
 	app := fiber.New()
+
 	app.Use(cors.New(cors.Config{
 		AllowOrigins: cfg.AllowedOrigins,
 	}))
 
 	app.Use(logger.New())
+
 	if cfg.ApplicationMode == "REVERSE_PROXY" {
 		InitReverseProxy(app)
 	}

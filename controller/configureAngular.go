@@ -16,7 +16,10 @@ type configureAngularResponse struct {
 	Error      string `json:"error"`
 }
 
+// Controller for adding a angular configuration
 func ConfigureAngularController(c *fiber.Ctx) error {
+
+	// checking cors permissions
 	if !utils.CheckCORS(c.IP()) {
 		return c.JSON(configureAngularResponse{
 			"Your origin is not allowed",
@@ -25,8 +28,13 @@ func ConfigureAngularController(c *fiber.Ctx) error {
 			"None",
 		})
 	}
+
 	domain := c.Query("domain")
+
+	// defining path for config
 	cfgPath := "/etc/nginx/rproxy/http/enabled/" + domain + ".conf"
+
+	// creates file if not exist
 	if _, err := os.Stat(cfgPath); os.IsNotExist(err) {
 		_, err := os.Create(cfgPath)
 		if err != nil {
@@ -38,9 +46,16 @@ func ConfigureAngularController(c *fiber.Ctx) error {
 			})
 		}
 	}
+
 	cfg, _ := config.ParseConfig()
+
+	// reads template angular configuration
 	data, _ := ioutil.ReadFile("/root/installation-service/sample/angular.conf")
+
+	// modifies config
 	modified := []byte(strings.ReplaceAll(strings.ReplaceAll(string(data), "{{DOMAIN}}", domain), "{{UPSTREAM}}", cfg.WebserverAddress))
+
+	// writes modified config to configuration file
 	err := ioutil.WriteFile(cfgPath, modified, 0644)
 	if err != nil {
 		return c.JSON(configureAngularResponse{
