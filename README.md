@@ -4,12 +4,13 @@ I wrote this appication especially for an server I am working on. But it can als
 used on every other server.
 
 ## further developed
-The development of this application is completed. It is perfect for my use and it will only get changes, if I need them.
+I will develop this, if I need more features or I get some new ideas to add for other users of this software.
 
 ## Important
 This application is only creating your configurations. It does not restart your nginx server.
 If you want to use this application in production, make sure you set your allowed-origins correctly in the config.json
 Otherwise everyone can create configurations on your server.
+Furthermore this application is not working in your network, because it does not match you needs.
 
 ## Installation
 This is a step by step tutorial
