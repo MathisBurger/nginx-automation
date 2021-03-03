@@ -26,7 +26,7 @@ func ConfigureAngularController(c *fiber.Ctx) error {
 		})
 	}
 	domain := c.Query("domain")
-	cfgPath := "/etc/nginx/rproxy/http/enabled" + domain + ".conf"
+	cfgPath := "/etc/nginx/rproxy/http/enabled/" + domain + ".conf"
 	if _, err := os.Stat(cfgPath); os.IsNotExist(err) {
 		_, err := os.Create(cfgPath)
 		if err != nil {

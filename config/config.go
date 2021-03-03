@@ -12,6 +12,7 @@ type Config struct {
 	ApplicationPort  string `json:"application-port"`
 }
 
+// parses config
 func ParseConfig() (c *Config, err error) {
 	f, err := os.Open("/root/installation-service/config/config.json")
 	if err != nil {
